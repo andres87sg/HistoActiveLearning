@@ -1,4 +1,4 @@
-# HistoActiveLearning
+Active Learning for Histopathology Images
 
 Python Requirements:
 opencv-python
