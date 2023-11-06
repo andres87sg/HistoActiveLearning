@@ -1,0 +1,42 @@
+{"settings":[
+
+{
+   "experiment_name": "Experiment 1",
+	"img_path": "D:/GBM_Project/Current_Experiments/PC_Patches/PC_1792_ChL_Aug2023/",
+	"train_img_path": 	"Training/PC/",
+	"train_mask_path": "Training/PC_SG/" ,
+	"test_img_path": 	"Testing/PC/",
+	"test_mask_path":	"Testing/PC_SG/"
+},
+
+{	"BestModelName": "Exp1_24Oct2024.h5",
+	"TempModelName": "TempModelAL.h5",
+	"ModelPath":"D:/GBM_Project/Experiments/CurrentModels/"
+},
+
+{
+	"imsize": 1792,
+	"scale": 8,
+	"batch_size": 4,
+	"train_model_epochs": 2
+},
+
+{
+	"query_perc": 0.10,
+	"train_perc": 0.10,
+	"validation_split":0.25
+},
+
+{
+	"verbosemodelcheckpoint":0,
+	"verbosemodelfit":1,
+		
+	"earlystoppingepochs":100,
+	"verboseearlystopping":0
+}
+]
+}
+
+
+
+
