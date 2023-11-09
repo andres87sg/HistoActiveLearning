@@ -4,11 +4,11 @@
    "experiment_name": "Experiment 1",
 	"img_path": "D:/ISBI Experiments/IvyGap_TCGA/",
 	"train_img_path": 	"Training/",
-	"test_img_path": 	"Testing_IVYGAP/"
+	"test_img_path": 	"Testing/"
 },
 
 {	"BestModelName": "Exp1_1Nov2024_IvyTCGA.h5",
-	"TempModelName": "TempModelAL_20perc.h5",
+	"TempModelName": "TempModelAL.h5",
 	"ModelPath":"D:/ISBI Experiments/"
 },
 
@@ -16,7 +16,7 @@
 	"imsize": 224,
 	"scale": 1,
 	"batch_size": 8,
-	"train_model_epochs": 1
+	"train_model_epochs": 200
 },
 
 {
