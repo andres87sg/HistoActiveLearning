@@ -18,7 +18,7 @@ sm.set_framework('tf.keras')
 sm.framework()
 
 # path_model = "C:/Users/Andres/Desktop/BestALModel_PC_08102023_Exp1.h5"
-path_model = "D:/GBM_Project/Experiments/CurrentModels/ModelPC.h5"
+path_model = "D:/GBM_Project/Experiments/CurrentModels/BestAL_MV_Exp0_DataAugm.h5"
 
 model = GetModel()
 model.load_weights(path_model)
@@ -26,16 +26,17 @@ model.load_weights(path_model)
 #%%
 
 # path = 'D:/TCGA-GBM_Patches_MV_LAB/'
-# path = 'D:/GBM_Project/Current_Experiments/MV_Patches/MV_896_TCGA_ChA/MV/'
-path = 'D:/TCGA-GBM_Patches_PC_LAB/'
-destmaskpath = 'D:/mask_PC/'
+path = 'D:/GBM_Project/Current_Experiments/MV_Patches/MV_896_ChA_Aug2023/Testing/MV/'
+# path = 'D:/TCGA-GBM_Patches_PC_LAB/'
+# path = 'D:/TCGA-GBM_Patches_MV_LAB/'
+destmaskpath = 'D:/mask_MV/'
 
 savemask = True
 # path = 'D:/GBM_Project/Current_Experiments/MV_Patches/MV_896_ChA_data_augm/Testing/MV/'
 # destmaskpath = 'D:/GBM_Project/Current_Experiments/MV_Patches/MV_896_ChA_data_augm/Testing/MV_SG2/'
 
-imsize = 1792
-scale = 8
+imsize = 896
+scale = 4
 scaleimsize = imsize//scale
 
 files = sorted(os.listdir(path))

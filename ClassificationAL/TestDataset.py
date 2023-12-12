@@ -27,8 +27,8 @@ import tensorflow.keras as keras
 #from preprocessingdata import transform_rgb2lab
 # from Testingtools import Testingmodel, PredictUnlabeledDataPool
 # from Trainingtools import GeneratorData,ModelTraining,ModelTraining2
-from Trainingtools import TestGeneratorData
-from CreateSubSetDataFrame import CreateSubSetDataFrame
+from Utils.Trainingtools import TestGeneratorData
+from Utils.CreateSubSetDataFrame import CreateSubSetDataFrame
 
 from sklearn.metrics import confusion_matrix, roc_auc_score
 # from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
