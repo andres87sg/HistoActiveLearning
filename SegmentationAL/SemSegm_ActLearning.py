@@ -391,7 +391,7 @@ plt.ylabel('Dice Score')
 #Activation(activation, kwargs)plt.legend()
 plt.show()
 #%%
-
+""" 
 
 # ***Evaluation***
 
@@ -406,12 +406,8 @@ model = GetModel()
 model.load_weights(path_model)
 
 # model = sm.Unet(BACKBONE, classes=1, activation='sigmoid')
-#%%
 
-# path = 'D:/GBM_Project/Current_Experiments/MV_Patches/MV_896_raw_Aug2023/Testing/MV/'
-# maskpath = 'D:/GBM_Project/Current_Experiments/MV_Patches/MV_896_raw_Aug2023/Testing/MV_SG/'
-# path = 'D:/GBM_Project/Current_Experiments/MV_Patches/MV_896_ChA_Aug2023/Testing/MV/'
-# maskpath = 'D:/GBM_Project/Current_Experiments/MV_Patches/MV_896_ChA_Aug2023/Testing/MV_SG/'
+
 
 path = 'D:/GBM_Project/Current_Experiments/PC_Patches/PC_1792_ChL_Aug2023/Testing/PC/'
 maskpath = 'D:/GBM_Project/Current_Experiments/PC_Patches/PC_1792_ChL_Aug2023/Testing/PC_SG/'
@@ -509,6 +505,5 @@ print(f'IoU Score: {meanIoU:.3f} +- {stdIoU:.3f}')
 print('------------------------')
 print(f'Dice Score: {meandice:.3f} +- {stddice:.3f}')
 print('------------------------')
-    
-#%%
+"""
 
