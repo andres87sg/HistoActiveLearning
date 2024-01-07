@@ -99,17 +99,19 @@ def TrainModel(train_generator,steps_train,valid_generator,steps_valid,load_weig
                          save_best_only=True, 
                          mode='min')
     
+    
+    # Loss function                  
+    model.compile('Adam',loss=[sm.losses.JaccardLoss(per_image=False,smooth=1e-05),
+                                sm.losses.BinaryCELoss()
+                                ],
+    
     # model.compile('Adam',loss=[sm.losses.JaccardLoss(),sm.losses.BinaryCELoss()],
     #                metrics=[metrics.iou_score],)
     
     # model.compile('Adam',loss=[sm.losses.JaccardLoss(per_image=False,smooth=1e-05),
     #                            sm.losses.BinaryFocalLoss(alpha=0.25,gamma=2)
     #                            sm.losses.CategoricalCELoss()],
-                  
-    model.compile('Adam',loss=[sm.losses.JaccardLoss(per_image=False,smooth=1e-05),
-                                sm.losses.BinaryCELoss()
-                                ],
-    
+  
     # model.compile('Adam',loss=[sm.losses.JaccardLoss(per_image=False,smooth=1e-05),
     #                             # sm.losses.BinaryFocalLoss(alpha=1-0.25,gamma=2),
     #                             # sm.losses.DiceLoss(per_image=False,smooth=1e-05)

@@ -15,7 +15,7 @@ import pandas as pd
 import tensorflow as tf
 
 # Segmentation_models library
-import segmentation_models as sm
+# import segmentation_models as sm
 from Utils.GetModel3 import GetModel
 # from Utils.GetModel2 import GetModel
 # from Utils.GetModel3 import GetModel
@@ -173,6 +173,7 @@ print('----> Testing Base Model <----')
 
 path_model = ckptmodel_path
 model = GetModel()
+
 #%%
 Testing_img_list = test_img_df.values.tolist()
 Testing_mask_list = test_mask_df.values.tolist()
@@ -247,7 +248,8 @@ for iteration in range(iterations-1):
         })
     
     new_list.drop(columns={'filename'})
-    sort_by = 'Random'
+    
+    sort_by = 'DiceScore'
 
     if sort_by == 'DiceScore':
     
@@ -391,16 +393,18 @@ plt.ylabel('Dice Score')
 #Activation(activation, kwargs)plt.legend()
 plt.show()
 #%%
-""" 
+
 
 # ***Evaluation***
+
+# import segmentation_models as sm
 
 sm.set_framework('tf.keras')
 sm.framework()
 
-path_model = "D:/GBM_Project/Experiments/CurrentModels/PCModel_EffUNet_18102023_Exp1.h5"
-# path_model = "C:/Users/Andres/Desktop/BestALModel_16102023_Exp1.h5"
-path_model = bestmodel_path
+# path_model = "D:/GBM_Project/Experiments/CurrentModels/PCModel_EffUNet_01022024_Exp1.h5"
+# path_model = "D:/GBM_Project/Experiments/CurrentModels/PCModel_EffUNet_18102023_Exp1.h5"
+# path_model = bestmodel_path
 
 model = GetModel()
 model.load_weights(path_model)
@@ -409,8 +413,8 @@ model.load_weights(path_model)
 
 
 
-path = 'D:/GBM_Project/Current_Experiments/PC_Patches/PC_1792_ChL_Aug2023/Testing/PC/'
-maskpath = 'D:/GBM_Project/Current_Experiments/PC_Patches/PC_1792_ChL_Aug2023/Testing/PC_SG/'
+path = 'D:/JournalExperiments/PC/TCGA/PC_1792_ChL/Training/PC/'
+maskpath = 'D:/JournalExperiments/PC/TCGA/PC_1792_ChL/Training/PC_SG/'
 
 # path = 'D:/GBM_Project/Current_Experiments/MV_Patches/MV_896_ChA_data_augm/Testing/MV/'
 # maskpath = 'D:/GBM_Project/Current_Experiments/MV_Patches/MV_896_ChA_data_augm/Testing/MV_SG/'
@@ -505,5 +509,5 @@ print(f'IoU Score: {meanIoU:.3f} +- {stdIoU:.3f}')
 print('------------------------')
 print(f'Dice Score: {meandice:.3f} +- {stddice:.3f}')
 print('------------------------')
-"""
+
 

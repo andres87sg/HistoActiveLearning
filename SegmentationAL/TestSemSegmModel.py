@@ -18,7 +18,7 @@ sm.set_framework('tf.keras')
 sm.framework()
 
 # path_model = "C:/Users/Andres/Desktop/BestALModel_PC_08102023_Exp1.h5"
-path_model = "D:/GBM_Project/Experiments/CurrentModels/BestAL_MV_Exp0_DataAugm.h5"
+path_model = "D:/GBM_Project/Experiments/CurrentModels/BestAL_MV_Exp0_DataAugm2.h5"
 
 model = GetModel()
 model.load_weights(path_model)
@@ -26,9 +26,9 @@ model.load_weights(path_model)
 #%%
 
 # path = 'D:/TCGA-GBM_Patches_MV_LAB/'
-path = 'D:/GBM_Project/Current_Experiments/MV_Patches/MV_896_ChA_Aug2023/Testing/MV/'
-# path = 'D:/TCGA-GBM_Patches_PC_LAB/'
-# path = 'D:/TCGA-GBM_Patches_MV_LAB/'
+# path = 'D:/JournalExperiments/PC/IvyGap+TCGA/PC_1792_ChL/Testing/PC/'
+# path = 'D:/TCGA-GBM_Patches_MV/'
+path = 'D:/MV/TCGA-GBM_Patches_MV_LAB/'
 destmaskpath = 'D:/mask_MV/'
 
 savemask = True
@@ -73,6 +73,7 @@ for imfile in files:
                             interpolation = cv.INTER_LINEAR))*255
     
     if savemask == True:
+        # print('a')
         cv.imwrite(destmaskpath+'SG_'+ imfile, predmask_resized)
     
     
@@ -93,4 +94,4 @@ for imfile in files:
     plt.axis('off')
     plt.title('Prediction')
     
-    cv.imwrite(destmaskpath+'SG_'+ imfile, predmask_resized)
+    

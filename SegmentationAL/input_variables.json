@@ -9,7 +9,7 @@
 	"test_mask_path":	"Testing/PC_SG/"
 },
 
-{	"BestModelName": "Exp1_24Oct2024.h5",
+{	"BestModelName": "Exp1_01Ene2024_PC.h5",
 	"TempModelName": "TempModelAL.h5",
 	"ModelPath":"D:/GBM_Project/Experiments/CurrentModels/"
 },
@@ -23,15 +23,15 @@
 
 {
 	"query_perc": 0.10,
-	"train_perc": 0.10,
+	"train_perc": 0.15,
 	"validation_split":0.25
 },
 
 {
 	"verbosemodelcheckpoint":0,
-	"verbosemodelfit":1,
+	"verbosemodelfit":0,
 		
-	"earlystoppingepochs":100,
+	"earlystoppingepochs":200,
 	"verboseearlystopping":0
 }
 ]
