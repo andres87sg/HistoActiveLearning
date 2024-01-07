@@ -72,12 +72,12 @@ def TrainModel(train_generator,steps_train,valid_generator,steps_valid,load_weig
         #model.layers[12].load_weights('/mnt/rstor/CSE_BME_CCIPD/home/asg143/pretrainedmodel.h5')
         #model.layers[19].load_weights('/mnt/rstor/CSE_BME_CCIPD/home/asg143/pretrainedmodel.h5')
         
-    def step_decay(epoch):
-    	initial_lrate = 1e-4
-    	drop = 0.1
-    	epochs_drop = 3
-    	lrate = initial_lrate * math.pow(drop, math.floor((1+epoch)/epochs_drop))
-    	return lrate
+    # def step_decay(epoch):
+    # 	initial_lrate = 1e-4
+    # 	drop = 0.1
+    # 	epochs_drop = 3
+    # 	lrate = initial_lrate * math.pow(drop, math.floor((1+epoch)/epochs_drop))
+    # 	return lrate
     
     # lr = LearningRateScheduler(step_decay)
     

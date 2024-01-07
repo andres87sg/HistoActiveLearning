@@ -15,7 +15,7 @@ import pandas as pd
 import tensorflow as tf
 
 # Segmentation_models library
-# import segmentation_models as sm
+import segmentation_models as sm
 from Utils.GetModel3 import GetModel
 # from Utils.GetModel2 import GetModel
 # from Utils.GetModel3 import GetModel
@@ -23,8 +23,8 @@ from Utils.GetTrainModel import TrainModel
 from Utils.GetTestModel import TestPool
 from Utils.GetImgSubsetGenerator import ImGenTrain, ImGenTest
 
-physical_devices = tf.config.list_physical_devices('GPU')
-print("Num GPUs Available: ", len(physical_devices))
+# physical_devices = tf.config.list_physical_devices('GPU')
+# print("Num GPUs Available: ", len(physical_devices))
 # Disable GPU
 # os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 
@@ -46,7 +46,7 @@ imsize = dictsettings[2]["imsize"]
 scale = dictsettings[2]["scale"]
 batch_size = dictsettings[2]["batch_size"]
 train_model_epochs = dictsettings[2]["train_model_epochs"]
-scaleimsize = imsize//scale
+scaledimsize = imsize//scale
 
 ckptmodel_path = ModelPath + TempModelName
 bestmodel_path = ModelPath + BestModelName
@@ -67,9 +67,15 @@ train_perc = dictsettings[3]["train_perc"]
 # Validation Split
 validation_split = dictsettings[3]["validation_split"]
 
+# Sampling strategy
+sampling_strategy = dictsettings[3]["sampling_strategy"]
+
 # Training, validation and testing images 
 img_path = main_img_path + dictsettings[0]['train_img_path']
 mask_path = main_img_path + dictsettings[0]['train_mask_path']
+
+validation_img_path = main_img_path + dictsettings[0]['validation_img_path']
+validation_mask_path = main_img_path + dictsettings[0]['validation_mask_path'] 
 
 test_img_path = main_img_path + dictsettings[0]['test_img_path']
 test_mask_path = main_img_path + dictsettings[0]['test_mask_path'] 
@@ -80,7 +86,7 @@ print('************************')
 print('------ Parameters -------')
 print(f'Epochs: {train_model_epochs}')
 print(f'Batch size: {batch_size}')
-print(f'Image size: {imsize} pix scaled {scale} times ({scaleimsize} pix)')
+print(f'Image size: {imsize} pix scaled {scale} times ({scaledimsize} pix)')
 print(f'Base train percentage: {train_perc*100:.0f}% ')
 print('|')
 print(f'|--> Split: Training {(1-validation_split)*100:.0f}% and Validation {(validation_split)*100:.0f}%')
@@ -121,7 +127,7 @@ valid_generator = zip(val_image_generator, val_mask_generator)
 steps_train = np.int8(np.ceil(train_image_generator.n/train_image_generator.batch_size))
 steps_valid = np.int8(np.ceil(val_image_generator.n//val_image_generator.batch_size))
 
-print("------ Training and validation split -------")
+print("------ Training and validation split (Base-training set) -------")
 print(f'Base training and validation samples: {train_image_generator.n+val_image_generator.n}')
 print(f'Training samples: {train_image_generator.n} -> {train_image_generator.n/(train_image_generator.n+val_image_generator.n)*100:.1f}%')
 print(f'Validation samples: {val_image_generator.n} -> {val_image_generator.n/(train_image_generator.n+val_image_generator.n)*100:.1f}%')
@@ -155,21 +161,21 @@ model = TrainModel(train_generator,
 
 # load_weigts: 0) from scratch 1) Pretrained 2) Imagenet pretrained
 
-#%% TESTING PRE-TRAINED MODEL
+#%% VALIDATION - PRE-TRAINED MODEL
 
-test_files = sorted(os.listdir(test_img_path))
-test_mask_files = sorted(os.listdir(test_mask_path))
+test_files = sorted(os.listdir(validation_img_path))
+test_mask_files = sorted(os.listdir(validation_mask_path))
 
 test_img_df = pd.DataFrame(test_files, columns=['filename'])
 test_mask_df = pd.DataFrame(test_mask_files, columns=['filename'])
 
-test_image_generator, test_mask_generator=ImGenTest(test_img_path,
-                                                       test_mask_path,
+test_image_generator, test_mask_generator=ImGenTest(validation_img_path,
+                                                       validation_mask_path,
                                                        test_img_df,
                                                        test_mask_df,
                                                        DataAugm=0)
 
-print('----> Testing Base Model <----')
+print('----> Validation - Base Model <----')
 
 path_model = ckptmodel_path
 model = GetModel()
@@ -178,8 +184,8 @@ model = GetModel()
 Testing_img_list = test_img_df.values.tolist()
 Testing_mask_list = test_mask_df.values.tolist()
 
-(DiceUnlabeledPool,_,_,_,_)  = TestPool(test_img_path,
-                                test_mask_path,
+(DiceUnlabeledPool,_,_,_,_)  = TestPool(validation_img_path,
+                                validation_mask_path,
                                 Testing_img_list,
                                 Testing_mask_list,
                                 True, 
@@ -227,7 +233,6 @@ for iteration in range(iterations-1):
 
     print(f"Iteration Numbrer {iteration +1} of {iterations-1}")
     
-    print("Testing Unlabeled Pool")
     (DiceUnlabeledPool,_,_,_,_) = TestPool(img_path,
                                               mask_path,
                                               Unlabeled_img_list,
@@ -249,29 +254,33 @@ for iteration in range(iterations-1):
     
     new_list.drop(columns={'filename'})
     
-    sort_by = 'DiceScore'
-
-    if sort_by == 'DiceScore':
+    sort_by = sampling_strategy
     
-            
+    print("Prediction -> Unlabeled Pool")
+    
+    if sort_by == 'True':
+        
+        print('Sampling strategy: Sort by Dice Score')
         new_list_sort=new_list.sort_values(by=['DiceScore'])
         print('Head')
-        print(new_list_sort.head(3))
-        # print(new_list_sort[{'filename','DiceScore'}].head(3))
+        print(new_list_sort[['index','filename','DiceScore']].head(3))
         print('Tail')
-        print(new_list_sort.tail(3))
+        print(new_list_sort[['index','filename','DiceScore']].tail(3))
+        
+        # print(new_list_sort.head(3))
+        # print(new_list_sort[{'filename','DiceScore'}].head(3))
+        # print(new_list_sort.tail(3))
         # print(new_list_sort[{'filename','DiceScore'}].tail(3))
     
-    if sort_by == 'Random':
+    if sort_by == 'False':
+        
+        print('Sampling strategy: Random')
         new_list_sort=new_list.sort_values(by=['index'])
         print('Head')
-        # print(new_list_sort[{'filename','DiceScore'}].head(3))
-        print(new_list_sort.head(3))
-        
+        print(new_list_sort[['index','filename','DiceScore']].head(3))
         print('Tail')
-        print(new_list_sort.tail(3))
-        # print(new_list_sort[{'filename','DiceScore'}].tail(3))
-    
+        print(new_list_sort[['index','filename','DiceScore']].tail(3))
+        
     
     sorted_img_pool = new_list_sort['filename'].values.tolist()
     sorted_mask_pool = new_list_sort['mask_filename'].values.tolist()
@@ -319,10 +328,10 @@ for iteration in range(iterations-1):
                        load_weights=1,
                        model_path=ckptmodel_path)
     
-    print("Testing Model - Unlabeled Pool")
+    print("Testing Model - Validation Set")
     
-    (_,meandice,stddice,meanIoU,stdIoU) = TestPool(test_img_path,
-                                                      test_mask_path,
+    (_,meandice,stddice,meanIoU,stdIoU) = TestPool(validation_img_path,
+                                                      validation_mask_path,
                                                       Testing_img_list,
                                                       Testing_mask_list,
                                                       False,
@@ -352,7 +361,7 @@ print(ResultsSummary.round(3))
 #%% TESTING MODEL ON TEST-DATASET
 from Utils.GetTestModel import TestPool
 
-print('----> Testing Best Model <----')
+print('----> Validation - Best Model <----')
 
 path_model = bestmodel_path
 
@@ -362,8 +371,8 @@ model.load_weights(path_model)
 Testing_img_list = test_img_df.values.tolist()
 Testing_mask_list = test_mask_df.values.tolist()
 
-TestPool(test_img_path,
-            test_mask_path,
+TestPool(validation_img_path,
+            validation_mask_path,
             Testing_img_list,
             Testing_mask_list,
             True, 
@@ -394,27 +403,22 @@ plt.ylabel('Dice Score')
 plt.show()
 #%%
 
-
+print('----> Testing: Best Model <----')
 # ***Evaluation***
-
-# import segmentation_models as sm
 
 sm.set_framework('tf.keras')
 sm.framework()
 
-# path_model = "D:/GBM_Project/Experiments/CurrentModels/PCModel_EffUNet_01022024_Exp1.h5"
-# path_model = "D:/GBM_Project/Experiments/CurrentModels/PCModel_EffUNet_18102023_Exp1.h5"
-# path_model = bestmodel_path
-
+path_model = bestmodel_path
 model = GetModel()
 model.load_weights(path_model)
 
 # model = sm.Unet(BACKBONE, classes=1, activation='sigmoid')
 
-
-
-path = 'D:/JournalExperiments/PC/TCGA/PC_1792_ChL/Training/PC/'
-maskpath = 'D:/JournalExperiments/PC/TCGA/PC_1792_ChL/Training/PC_SG/'
+path = test_img_path
+maskpath = test_mask_path
+# path = 'D:/JournalExperiments/PC/TCGA/PC_1792_ChL/Training/PC/'
+# maskpath = 'D:/JournalExperiments/PC/TCGA/PC_1792_ChL/Training/PC_SG/'
 
 # path = 'D:/GBM_Project/Current_Experiments/MV_Patches/MV_896_ChA_data_augm/Testing/MV/'
 # maskpath = 'D:/GBM_Project/Current_Experiments/MV_Patches/MV_896_ChA_data_augm/Testing/MV_SG/'
@@ -425,12 +429,15 @@ IoUmetric = []
 Dicemetric = []
 
 
-imsize = 896
-scale = 4
-scaleimsize = imsize//scale
+# imsize = 896
+# scale = 4
+scaledimsize = imsize//scale
 
 files = sorted(os.listdir(path))
 maskfiles = sorted(os.listdir(maskpath))
+
+# Show Segmentation mask 
+showresults = False
  
 for imfile,maskfile in zip(files,maskfiles):
 # for imfile,maskfile in zip(files[14:15],maskfiles[14:15]):
@@ -441,11 +448,11 @@ for imfile,maskfile in zip(files,maskfiles):
     maskarray=cv.imread(maskpath+maskfile) 
     
     # Resizing image
-    imarray_resized = cv.resize(imarray,(scaleimsize,scaleimsize), 
+    imarray_resized = cv.resize(imarray,(scaledimsize,scaledimsize), 
                             interpolation = cv.INTER_AREA)
     
     # Resizing mask
-    mask_resized = cv.resize(maskarray,(scaleimsize,scaleimsize), 
+    mask_resized = cv.resize(maskarray,(scaledimsize,scaledimsize), 
                             interpolation = cv.INTER_AREA)
     
     # Prediction
@@ -467,7 +474,6 @@ for imfile,maskfile in zip(files,maskfiles):
     
     if np.sum(truemask_flat)>0:
         
-        print(imfile)
         delta=0.0001
         IoU =np.sum(intersection)/(np.sum(union)+delta)
         Dice = 2*np.sum(intersection)/(np.sum(predmask_flat)+np.sum(truemask_flat)+delta)
@@ -475,24 +481,24 @@ for imfile,maskfile in zip(files,maskfiles):
     Dicemetric.append(Dice)
     IoUmetric.append(IoU)
     
-    
-    plt.show()
-    plt.title('eso')
-    
-    plt.subplot(1,3,1)
-    plt.imshow(imarray)
-    plt.axis('off')
-    plt.title(imfile[:-7])
-    
-    plt.subplot(1,3,2)
-    plt.imshow(truemask,cmap='gray')
-    plt.axis('off')
-    plt.title('Grountruth')
-    
-    plt.subplot(1,3,3)
-    plt.imshow(predmask, cmap='gray')
-    plt.axis('off')
-    plt.title('Prediction')
+    if showresults==True:
+        plt.show()
+        print(imfile)
+        
+        plt.subplot(1,3,1)
+        plt.imshow(imarray)
+        plt.axis('off')
+        plt.title(imfile[:-7])
+        
+        plt.subplot(1,3,2)
+        plt.imshow(truemask,cmap='gray')
+        plt.axis('off')
+        plt.title('Grountruth')
+        
+        plt.subplot(1,3,3)
+        plt.imshow(predmask, cmap='gray')
+        plt.axis('off')
+        plt.title('Prediction')
     
 IoU = np.array(IoUmetric)
 meanIoU = np.mean(IoUmetric)
