@@ -175,7 +175,7 @@ test_image_generator, test_mask_generator=ImGenTest(validation_img_path,
                                                        test_mask_df,
                                                        DataAugm=0)
 
-print('----> Validation - Base Model <----')
+print('----> Testing Pre-Trainided model on the VALIDATION set <----')
 
 path_model = ckptmodel_path
 model = GetModel()
@@ -256,7 +256,7 @@ for iteration in range(iterations-1):
     
     sort_by = sampling_strategy
     
-    print("Prediction -> Unlabeled Pool")
+    print("Prediction on the UNLABELED POOL SET")
     
     if sort_by == 'True':
         
@@ -312,7 +312,7 @@ for iteration in range(iterations-1):
                                                            DataAugm=1)
     
     print('_________________________________')
-    print(f"New Unlabeled-Pool Size: {len(Unlabeled_img_list)}")
+    print(f"New UNLABELED-POOL Set Size: {len(Unlabeled_img_list)}")
     print('---------------------------------')
     
     train_generator = zip(train_image_generator, train_mask_generator)
@@ -328,7 +328,7 @@ for iteration in range(iterations-1):
                        load_weights=1,
                        model_path=ckptmodel_path)
     
-    print("Testing Model - Validation Set")
+    print("Testing model on the VALIDATION set")
     
     (_,meandice,stddice,meanIoU,stdIoU) = TestPool(validation_img_path,
                                                       validation_mask_path,
@@ -343,11 +343,16 @@ for iteration in range(iterations-1):
     StdDiceList.append(stddice)
     
     print('**********************************')
-    print(f"Current Dice-Score: {str(meandice)}")
-    print(f"Best achieved Dice-Score: {np.max(MeanDiceList)}")
+    print(f"Current Dice-Score: {meandice:.3f}")
+    print(f"Best achieved Dice-Score: {np.max(MeanDiceList):.3f}")
+    
+    # print(f"Current Dice-Score: {str(meandice)}")
+    # print(f"Best achieved Dice-Score: {np.max(MeanDiceList:.3f)}")
+    
+    # Save the model if it achieves better performance on the validation set
     if meandice>=np.max(MeanDiceList):
-        print('----> Saving Model Best Dice-Score in: ')
-        print(bestmodel_path)
+        print('----> Saving Model Best Dice-Score in:')
+        print('----> ' + bestmodel_path)
         model.save_weights(bestmodel_path)
     print('**********************************')
     
@@ -358,10 +363,10 @@ print('******** Summary: Dice-Score *********')
 ResultsSummary = pd.DataFrame({'Mean': MeanDiceList,'Std': StdDiceList})
 print(ResultsSummary.round(3))
 
-#%% TESTING MODEL ON TEST-DATASET
+#%% TESTING MODEL ON VALIDATION-DATASET
 from Utils.GetTestModel import TestPool
 
-print('----> Validation - Best Model <----')
+print('----> Testing BEST model on the VALIDATION set <----')
 
 path_model = bestmodel_path
 
@@ -403,7 +408,7 @@ plt.ylabel('Dice Score')
 plt.show()
 #%%
 
-print('----> Testing: Best Model <----')
+print('----> Testing BEST model on the TEST set <----')
 # ***Evaluation***
 
 sm.set_framework('tf.keras')
