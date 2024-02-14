@@ -17,19 +17,26 @@ from Utils.GetModel import GetModel
 sm.set_framework('tf.keras')
 sm.framework()
 
-# path_model = "C:/Users/Andres/Desktop/BestALModel_PC_08102023_Exp1.h5"
-path_model = "D:/GBM_Project/Experiments/CurrentModels/BestAL_MV_Exp0_DataAugm2.h5"
+# path_model = "C:/Users/Andres/Desktop/PCModel_EffUNet_01082024_Exp1_069.h5"
+# path_model = "D:/GBM_Project/Experiments/CurrentModels/Exp_NoAL_Ivy+TCGA.h5"
+path_model = "D:/GBM_Project/Experiments/CurrentModels/BestAL_MV_Exp0_DataAugm7.h5"
+
 
 model = GetModel()
 model.load_weights(path_model)
 
-#%%
 
+# path = 'D:/JournalExperiments/PC/TCGA/PC_1792_ChL/Testing/PC/'
 # path = 'D:/TCGA-GBM_Patches_MV_LAB/'
 # path = 'D:/JournalExperiments/PC/IvyGap+TCGA/PC_1792_ChL/Testing/PC/'
 # path = 'D:/TCGA-GBM_Patches_MV/'
-path = 'D:/MV/TCGA-GBM_Patches_MV_LAB/'
-destmaskpath = 'D:/mask_MV/'
+# path = 'D:/JournalExperiments/PC/IvyGap/Testing/PC/'
+# path = 'D:/GBM_Project/Current_Experiments/PC_Patches/PC_1792_ChL_Aug2023/Testing/PC/'
+# 
+# destmaskpath = 'D:/JournalExperiments/PC/Predictions/IvyGap_SL_Frozen/'
+path = 'D:/MV/TCGA-GBM_Patches_MV/'
+destmaskpath = 'D:/MV/TCGA-GBM_Patches_MV_LAB/'
+# destmaskpath = 'D:/JournalExperiments/PC/Predictions/TCGA_SL_Frozen/'
 
 savemask = True
 # path = 'D:/GBM_Project/Current_Experiments/MV_Patches/MV_896_ChA_data_augm/Testing/MV/'

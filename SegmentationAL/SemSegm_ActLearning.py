@@ -133,10 +133,10 @@ print(f'Training samples: {train_image_generator.n} -> {train_image_generator.n/
 print(f'Validation samples: {val_image_generator.n} -> {val_image_generator.n/(train_image_generator.n+val_image_generator.n)*100:.1f}%')
 print("--------------------------------------------")
 #%%
-show_image_samples = False
+show_image_samples = True
 
 if show_image_samples:
-    for _ in range(1,4):
+    for _ in range(1,6):
         img = train_image_generator.next()
         mask = train_mask_generator.next()
         
@@ -179,6 +179,26 @@ print('----> Testing Pre-Trainided model on the VALIDATION set <----')
 
 path_model = ckptmodel_path
 model = GetModel()
+
+#%%
+
+# show_image_samples = True
+
+# if show_image_samples:
+#     for _ in range(1,6):
+#         img = test_image_generator.next()
+#         mask = test_mask_generator.next()
+        
+#         print(img.shape)
+#         plt.figure(1)
+#         plt.subplot(1,2,1)
+#         plt.axis('off')
+#         plt.imshow(img[0])
+#         plt.subplot(1,2,2)
+#         plt.imshow(mask[0])
+#         plt.axis('off')
+#         plt.show()
+
 
 #%%
 Testing_img_list = test_img_df.values.tolist()
@@ -294,14 +314,30 @@ for iteration in range(iterations-1):
     NewTrain_img = BaseTrain_img_list + query_img_pool
     NewTrain_mask = BaseTrain_mask_list + query_mask_pool
     
-    # Updated list
+    # NewTrain_img =  query_img_pool + BaseTrain_img_list
+    # NewTrain_mask = query_mask_pool + BaseTrain_mask_list 
+
+    
+    # Updating unlabeled pool list
     Unlabeled_img_list = new_unlabeled_img_pool
     Unlabeled_mask_list =  new_unlabeled_mask_pool
     
     
     train_img_pool = pd.DataFrame(NewTrain_img, columns=['filename'])
     train_mask_pool = pd.DataFrame(NewTrain_mask, columns=['filename'])    
-        
+    
+    #Ojo con esto ---------------------
+    train_img_pool = train_img_pool.sort_values(by=['filename'])
+    train_mask_pool = train_mask_pool.sort_values(by=['filename'])
+    
+    # if sort_by == 'True':
+    
+    #     train_img_pool = train_img_pool.sample(frac=1, axis=0, random_state=1)
+    #     train_mask_pool = train_mask_pool.sample(frac=1, axis=0, random_state=1)
+    
+    #Ojo con esto ---------------------
+    
+    
     
     [train_image_generator, train_mask_generator,
      val_image_generator, val_mask_generator] = ImGenTrain(img_path,
@@ -411,15 +447,26 @@ plt.show()
 print('----> Testing BEST model on the TEST set <----')
 # ***Evaluation***
 
+# bestmodel_path = 'D:/GBM_Project/Experiments/CurrentModels/Ivy+TCGA_AL.h5'
+bestmodel_path = 'C:/Users/Andres/Desktop/IvyTCGA_AL.h5'
+# bestmodel_path = 'D:/GBM_Project/Experiments/CurrentModels/Exp1_09Ene2024_PC.h5'
+# test_img_path = 'D:/JournalExperiments/PC/IvyGap+TCGA/Test_IvyGap/PC/'
+# test_mask_path = 'D:/JournalExperiments/PC/IvyGap+TCGA/Test_IvyGap/PC_SG/'
+test_img_path = 'D:/JournalExperiments/PC/IvyGap+TCGA2/Test_TCGA/PC/'
+test_mask_path = 'D:/JournalExperiments/PC/IvyGap+TCGA2/Test_TCGA/PC_SG/'
+
+# test_img_path = 'D:/JournalExperiments/PC/TCGA/PC_1792_ChL/Test/PC/'
+# test_mask_path = 'D:/JournalExperiments/PC/TCGA/PC_1792_ChL/Test/PC_SG/'
+
+# D:/JournalExperiments/PC/TCGA/PC_1792_ChL/Test/PC/
+
 sm.set_framework('tf.keras')
 sm.framework()
-
 path_model = bestmodel_path
 model = GetModel()
 model.load_weights(path_model)
 
 # model = sm.Unet(BACKBONE, classes=1, activation='sigmoid')
-
 path = test_img_path
 maskpath = test_mask_path
 # path = 'D:/JournalExperiments/PC/TCGA/PC_1792_ChL/Training/PC/'
@@ -442,7 +489,7 @@ files = sorted(os.listdir(path))
 maskfiles = sorted(os.listdir(maskpath))
 
 # Show Segmentation mask 
-showresults = False
+showresults = True
  
 for imfile,maskfile in zip(files,maskfiles):
 # for imfile,maskfile in zip(files[14:15],maskfiles[14:15]):

@@ -2,16 +2,16 @@
 
 {
    "experiment_name": "Experiment 1",
-	"img_path": "D:/JournalExperiments/PC/IvyGap/PC_1792_ChL/",
+	"img_path": "D:/JournalExperiments/PC/IvyGap+TCGA2/",
 	"train_img_path": 	"Train/PC/",
 	"train_mask_path": "Train/PC_SG/" ,
-	"validation_img_path": 	"Validation/PC/",
-	"validation_mask_path": "Validation/PC_SG/" ,
-	"test_img_path": 	"Test/PC/",
-	"test_mask_path":	"Test/PC_SG/"
+	"validation_img_path": 	"Test_IvyGap/PC/",
+	"validation_mask_path": "Test_IvyGap/PC_SG/" ,
+	"test_img_path": 	"Test_IvyGap/PC/",
+	"test_mask_path":	"Test_IvyGap/PC_SG/"
 },
 
-{	"BestModelName": "Exp1_07Ene2024_PC.h5",
+{	"BestModelName": "Ivy+TCGA_AL.h5",
 	"TempModelName": "TempModelAL.h5",
 	"ModelPath":"D:/GBM_Project/Experiments/CurrentModels/"
 },
@@ -20,13 +20,13 @@
 	"imsize": 1792,
 	"scale": 8,
 	"batch_size": 4,
-	"train_model_epochs": 50
+	"train_model_epochs": 100
 },
 
 {
 	"query_perc": 0.10,
-	"train_perc": 0.15,
-	"validation_split":0.25,
+	"train_perc": 0.20,
+	"validation_split":0.20,
 	"sampling_strategy": "True"
 },
 
@@ -34,7 +34,7 @@
 	"verbosemodelcheckpoint":0,
 	"verbosemodelfit":0,
 		
-	"earlystoppingepochs":200,
+	"earlystoppingepochs":50,
 	"verboseearlystopping":0
 }
 ]
