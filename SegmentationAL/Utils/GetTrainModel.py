@@ -72,12 +72,12 @@ def TrainModel(train_generator,steps_train,valid_generator,steps_valid,load_weig
         #model.layers[12].load_weights('/mnt/rstor/CSE_BME_CCIPD/home/asg143/pretrainedmodel.h5')
         #model.layers[19].load_weights('/mnt/rstor/CSE_BME_CCIPD/home/asg143/pretrainedmodel.h5')
         
-    def step_decay(epoch):
-    	initial_lrate = 1e-4
-    	drop = 0.1
-    	epochs_drop = 3
-    	lrate = initial_lrate * math.pow(drop, math.floor((1+epoch)/epochs_drop))
-    	return lrate
+    # def step_decay(epoch):
+    # 	initial_lrate = 1e-4
+    # 	drop = 0.1
+    # 	epochs_drop = 3
+    # 	lrate = initial_lrate * math.pow(drop, math.floor((1+epoch)/epochs_drop))
+    # 	return lrate
     
     # lr = LearningRateScheduler(step_decay)
     
@@ -99,17 +99,19 @@ def TrainModel(train_generator,steps_train,valid_generator,steps_valid,load_weig
                          save_best_only=True, 
                          mode='min')
     
+    
+    # Loss function                  
+    model.compile('Adam',loss=[sm.losses.JaccardLoss(per_image=False,smooth=1e-05),
+                                sm.losses.BinaryCELoss()
+                                ],
+    
     # model.compile('Adam',loss=[sm.losses.JaccardLoss(),sm.losses.BinaryCELoss()],
     #                metrics=[metrics.iou_score],)
     
     # model.compile('Adam',loss=[sm.losses.JaccardLoss(per_image=False,smooth=1e-05),
     #                            sm.losses.BinaryFocalLoss(alpha=0.25,gamma=2)
     #                            sm.losses.CategoricalCELoss()],
-                  
-    model.compile('Adam',loss=[sm.losses.JaccardLoss(per_image=False,smooth=1e-05),
-                                sm.losses.BinaryCELoss()
-                                ],
-    
+  
     # model.compile('Adam',loss=[sm.losses.JaccardLoss(per_image=False,smooth=1e-05),
     #                             # sm.losses.BinaryFocalLoss(alpha=1-0.25,gamma=2),
     #                             # sm.losses.DiceLoss(per_image=False,smooth=1e-05)
