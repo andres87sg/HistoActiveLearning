@@ -11,7 +11,7 @@ import numpy as np
 import cv2 as cv
 import matplotlib.pyplot as plt
 import pandas as pd
-
+from Utils.GetModel import GetModel
 
 # import tensorflow as tf
 
@@ -47,15 +47,16 @@ def Testingmodel(TestData,TestImgGenerator,model,path_model):
     
     #truelabel = np.array(TestData['label'].astype(float))
     truelabel=TestImgGenerator.classes
-    predictedlabel = np.round(prediction[:,0])
-    predictedlabel = np.int16(predictedlabel)
+    predictedlabel = np.argmax(prediction,axis=1)
+    # predictedlabel = np.round(prediction[:,1])
+    # predictedlabel = np.int16(predictedlabel)
     
     tn, fp, fn, tp = confusion_matrix(truelabel,predictedlabel).ravel()
     
     acc = (tp+tn)/( tn + fp + fn + tp)
     sens = tp/(tp+fn)
     spec = tn/(tn+fp)
-    auc = roc_auc_score(truelabel,prediction[:,0])
+    auc = roc_auc_score(truelabel,prediction[:,1])
     
     print(f"Accuracy: {acc}")
     print(f"Sensitivity: {sens}")
@@ -83,10 +84,10 @@ scale = 1
 scaleimsize = imsize//scale
 batch_size = 16
 target_size=(224,224)
-epochs = 50
+# epochs = 50
 # main_path = 'D:/GBM_Project/Current_Experiments/CT_NE_Patches/'
-main_path = 'C:/Users/Andres/Desktop/PatchExtractionCT/'
-testpath = os.path.join(main_path, "Testing2/")
+main_path = 'D:/ISBI Experiments/IvyGap+TCGA+CPTAC/'
+testpath = os.path.join(main_path, "Testing_IvyGap/")
 
 classes = ['NE','CT']
 # TrainData = CreateSubSetDataFrame(trainpath,classes).GetMergedDataFrames()
@@ -103,14 +104,16 @@ TestSetImgGenerator,StepsTest = TestGeneratorData(TestData,
 
 
 
-model_path = 'D:/GBM_Project/Experiments/CurrentModels/ModelCTvsNE.h5'
-# model_path = 'C:/Users/Andres/Desktop/'
+# model_path = 'C:/Users/Andres/Desktop/ViT_02212024_Training_IVYGAP+TCGA.h5'
+# model_path = 'C:/Users/Andres/Desktop/ViT_02212024_IVYGAP.h5'
+model_path = 'D:/ISBI Experiments/Models/Train_IvyGap+TCGA.h5'
 
-ckptmodel_path = os.path.join(model_path,'TempModelCTvsNE.h5')
-bestmodel_path = os.path.join(model_path,'BestAL_CTvsNE.h5')
+# ckptmodel_path = os.path.join(model_path,'TempModelCTvsNE.h5')
+# bestmodel_path = os.path.join(model_path,'BestAL_CTvsNE.h5')
 #%%
 # model = GetModel()
-from tensorflow.keras.applications import EfficientNetB0 
+# model.load_weights(model_path) 
+# from tensorflow.keras.applications import EfficientNetB0 
 
 model = keras.applications.EfficientNetB0(include_top=True,
                         weights=None,
@@ -119,14 +122,14 @@ model = keras.applications.EfficientNetB0(include_top=True,
                         pooling=None,
                         classes=2,
                         classifier_activation="softmax")
-
+model.load_weights(model_path) 
 #%%
 # model_path = bestmodel_path
 
 
-model_path = 'D:/GBM_Project/Experiments/CurrentModels/ModelCTvsNE.h5'
+# model_path = 'D:/GBM_Project/Experiments/CurrentModels/ModelCTvsNE.h5'
 
-model.load_weights(model_path) 
+
 
 
 #%%

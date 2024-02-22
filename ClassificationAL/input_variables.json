@@ -2,7 +2,7 @@
 
 {
    "experiment_name": "Experiment 1",
-	"img_path": "D:/ISBI Experiments/IvyGap_TCGA/",
+	"img_path": "D:/ISBI Experiments/IvyGap/",
 	"train_img_path": 	"Training/",
 	"test_img_path": 	"Testing/"
 },
